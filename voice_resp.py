@@ -8,7 +8,7 @@ import os
 app = Flask(__name__)
 
 
-TELEGRAM_BOT_TOKEN = "YOUR_BOT_TOKEN"
+TELEGRAM_BOT_TOKEN = "8252412070:AAGBh9V3LVAvWOvjXicO6NQgIVIDd5eLtdA"
 TELEGRAM_API_BASE = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}"
 
 
